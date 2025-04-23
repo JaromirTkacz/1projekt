@@ -1,5 +1,5 @@
 /*
-Kod bazowy programu Commit4_0: 
+Kod bazowy programu Commit4_0:
 • Program dodaje do prostej bazy danych (pliku db.txt) dane odnośnie Studentów.
 • Studenci dodawani są w klasie Main.
 • Wszyscy studenci są wypisywani na końcu klasy Main.
@@ -13,9 +13,14 @@ class Main {
   public static void main(String[] args) {
     try {
       Service s = new Service();
-      s.addStudent(new Student("Krzysztof", 20));
-      s.addStudent(new Student("Janusz", 40));
+      java.util.Scanner scanner = new java.util.Scanner(System.in);
 
+      System.out.println("Podaj imie studenta:");
+      String name = scanner.nextLine();
+      System.out.println("Podaj wiek studenta:");
+      int age = scanner.nextInt();
+
+      s.addStudent(new Student(name, age));
       var students = s.getStudents();
       for(Student current : students) {
         System.out.println(current.ToString());
