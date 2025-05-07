@@ -41,7 +41,7 @@ public class Service {
     for (int i = 0; i < students.size(); i++) {
       Student student = students.get(i);
       if (student.getName().equalsIgnoreCase(name) && student.getLastName().equalsIgnoreCase(lastName)) {
-        students.set(i, new Student(name, lastName, newAge, student.getBirthDate()));
+        students.set(i, new Student(name, lastName, newAge));
         found = true;
         break;
       }

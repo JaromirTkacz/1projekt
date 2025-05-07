@@ -20,8 +20,7 @@ class Main {
             String name = imie();
             String lastname = nazwisko();
             int age = wiek();
-            String urodzenie = dataUrodzenia();
-            s.addStudent(new Student(name, lastname, age, urodzenie));
+            s.addStudent(new Student(name, lastname, age));
             System.out.println("Dodano studenta.");
             break;
           }
