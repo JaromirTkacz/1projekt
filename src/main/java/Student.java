@@ -21,7 +21,7 @@ public class Student {
 
   public static Student parse(String str) {
     String[] data = str.split(" ");
-    if (data.length != 3) {
+    if (data.length < 3) {
       System.out.println("Błąd parsowania danych: " + str);
       return new Student("Parse Error", "Parse Error", -1);
     }
