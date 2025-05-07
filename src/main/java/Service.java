@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Service {
   private List<Student> students;
-  private final String FILE_NAME = "db.txt";
+  private final String FILE_NAME = "students.txt";
 
   public Service() throws IOException {
     students = new ArrayList<>();
