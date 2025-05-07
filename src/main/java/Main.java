@@ -1,13 +1,6 @@
-/*4.3
-Kod bazowy programu Commit4_0:
-• Program dodaje do prostej bazy danych (pliku db.txt) dane odnośnie Studentów.
-• Studenci dodawani są w klasie Main.
-• Wszyscy studenci są wypisywani na końcu klasy Main.
-• Klasa Service obsługuje odczyt i zapis do pliku bazy danych.
-• Klasa Student reprezentuje pojedynczego studenta (Imię, Wiek).
-*/
-
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 class Main {
@@ -21,6 +14,7 @@ class Main {
         System.out.println("\nWybierz opcję:");
         System.out.println("1 - Dodaj studenta");
         System.out.println("2 - Wyświetl wszystkich studentów");
+        System.out.println("3 - Zakończ");
         System.out.print("Twój wybór: ");
         int choice = Integer.parseInt(scanner.nextLine());
 
@@ -44,8 +38,21 @@ class Main {
               }
             }
 
-            s.addStudent(new Student(name, lastname, age));
-            System.out.println(" Dodano studenta.");
+            String birthDate = "";
+            boolean validDate = false;
+            while (!validDate) {
+              System.out.print("Podaj datę urodzenia studenta (RRRR-MM-DD): ");
+              birthDate = scanner.nextLine();
+              try {
+                LocalDate.parse(birthDate); // sprawdza poprawność formatu
+                validDate = true;
+              } catch (DateTimeParseException e) {
+                System.out.println("❌ Niepoprawny format daty. Spróbuj ponownie.");
+              }
+            }
+
+            s.addStudent(new Student(name, lastname, age, birthDate));
+            System.out.println("✅ Dodano studenta.");
             break;
 
           case 2:
@@ -55,13 +62,21 @@ class Main {
               System.out.println(current.toString());
             }
             break;
+
+          case 3:
+            tak = false;
+            s.saveToFile();
+            System.out.println("👋 Zakończono program.");
+            break;
+
+          default:
+            System.out.println("Nieznana opcja. Wybierz ponownie.");
         }
       }
+
       scanner.close();
-
-
     } catch (IOException e) {
-
+      System.out.println("Wystąpił błąd: " + e.getMessage());
     }
   }
 }

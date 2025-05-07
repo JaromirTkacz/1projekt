@@ -1,27 +1,32 @@
 public class Student {
   private String name;
+  private String lastname;
   private int age;
-  private String lastName;
+  private String birthDate;
 
-  public Student(String name, String lastName, int age){
+  public Student(String name, String lastname, int age, String birthDate) {
     this.name = name;
+    this.lastname = lastname;
     this.age = age;
-    this.lastName = lastName;
+    this.birthDate = birthDate;
   }
 
-  public String getName() {return name;}
-  public String getLastName() {return lastName;}
-  public int getAge() {return age;}
-
+  @Override
   public String toString() {
-    return name + " " + lastName + " " + Integer.toString(age);
+    return name + " " + lastname + ", wiek: " + age + ", data urodzenia: " + birthDate;
   }
 
-  public static Student parse(String str) {
-    String[] data = str.split(" ");
-    if (data.length != 3) {
-      return new Student("Parse Error", "Parse Error", -1);
-    }
-    return new Student(data[0], data[1], Integer.parseInt(data[2]));
+  public String toDataString() {
+    return name + "," + lastname + "," + age + "," + birthDate;
+  }
+
+  public static Student parse(String line) {
+    String[] parts = line.split(",");
+    if (parts.length != 4) return null;
+    String name = parts[0];
+    String lastname = parts[1];
+    int age = Integer.parseInt(parts[2]);
+    String birthDate = parts[3];
+    return new Student(name, lastname, age, birthDate);
   }
 }
