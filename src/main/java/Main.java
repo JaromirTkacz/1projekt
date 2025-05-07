@@ -1,152 +1,145 @@
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Scanner;
 
 class Main {
-  static Scanner scanner = new Scanner(System.in);
-
   public static void main(String[] args) {
     try {
       Service s = new Service();
+      Scanner scanner = new Scanner(System.in);
 
-      while (true) {
-
-        menu();
-
-        int choice = Integer.parseInt(scanner.nextLine());
+      boolean running = true;
+      while (running) {
+        System.out.println("\nWybierz opcję:");
+        System.out.println("1 - Dodaj studenta");
+        System.out.println("2 - Wyświetl wszystkich studentów");
+        System.out.println("3 - Znajdź studentów po imieniu");
+        System.out.println("4 - Usuń studenta");
+        System.out.println("5 - Zaktualizuj dane studenta");
+        System.out.println("6 - Zakończ program");
+        System.out.print("Twój wybór: ");
+        int choice;
+        try {
+          choice = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+          System.out.println("Nieprawidłowy wybór!");
+          continue;
+        }
 
         switch (choice) {
-          case 1: {
-            String name = imie();
-            String lastname = nazwisko();
-            int age = wiek();
-            s.addStudent(new Student(name, lastname, age));
+          case 1:
+            System.out.print("Podaj imię studenta: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Podaj nazwisko studenta: ");
+            String lastName = scanner.nextLine();
+
+            int age = 0;
+            boolean validAge = false;
+            while (!validAge) {
+              System.out.print("Podaj wiek studenta: ");
+              try {
+                age = Integer.parseInt(scanner.nextLine());
+                validAge = true;
+              } catch (NumberFormatException e) {
+                System.out.println("Wiek musi być liczbą. Spróbuj jeszcze raz.");
+              }
+            }
+
+            String birthDate = "";
+            boolean validDate = false;
+            while (!validDate) {
+              System.out.print("Podaj datę urodzenia (DD-MM-YYYY): ");
+              birthDate = scanner.nextLine();
+              String[] parts = birthDate.split("-");
+              if (parts.length == 3) {
+                try {
+                  int year = Integer.parseInt(parts[2]);
+                  if (year >= 1900 && year <= 2025) {
+                    validDate = true;
+                  } else {
+                    System.out.println("Rok musi być w przedziale 1900-2025. Spróbuj ponownie.");
+                  }
+                } catch (NumberFormatException e) {
+                  System.out.println("Błędny format daty. Spróbuj ponownie.");
+                }
+              } else {
+                System.out.println("Błędny format daty. Użyj formatu DD-MM-YYYY.");
+              }
+            }
+
+            s.addStudent(new Student(name, lastName, age, birthDate));
             System.out.println("Dodano studenta.");
             break;
-          }
 
-          case 2: {
-            var students = s.getStudents();
+          case 2:
+            Collection<Student> students = s.getStudents();
             System.out.println("Lista studentów:");
-            for (Student current : students) {
-              System.out.println(current);
+            for (Student st : students) {
+              System.out.println(st);
             }
             break;
-          }
 
-          case 3: {
-            String searchName = imie();
-            Student foundStudent = s.findStudentByName(searchName);
-            if (foundStudent != null) {
-              System.out.println("Znaleziony student:");
-              System.out.println("- " + foundStudent);
+          case 3:
+            System.out.print("Podaj imię studenta do wyszukania: ");
+            String searchName = scanner.nextLine();
+            Collection<Student> foundStudents = s.findStudentsByName(searchName);
+            if (!foundStudents.isEmpty()) {
+              System.out.println("Znaleziono studentów:");
+              for (Student st : foundStudents) {
+                System.out.println(st);
+              }
             } else {
               System.out.println("Nie znaleziono studenta o imieniu: " + searchName);
             }
             break;
-          }
 
-          case 4: {
-            String searchName = imie();
-            String searchLastName = nazwisko();
-            boolean success = s.removeStudent(searchName, searchLastName);
-            if (success) {
-              System.out.println("Student " + searchName + " " + searchLastName + " został usunięty.");
+          case 4:
+            System.out.print("Podaj imię studenta do usunięcia: ");
+            String deleteName = scanner.nextLine();
+            System.out.print("Podaj nazwisko studenta do usunięcia: ");
+            String deleteLastName = scanner.nextLine();
+
+            if (s.deleteStudent(deleteName, deleteLastName)) {
+              System.out.println("Student został usunięty.");
             } else {
-              System.out.println("Nie znaleziono studenta o imieniu: " + searchName + " i nazwisku: " + searchLastName);
+              System.out.println("Nie znaleziono studenta o podanym imieniu i nazwisku.");
             }
             break;
-          }
-          case 5: {
-            String searchName = imie();
-            String searchLastName = nazwisko();
-            int newAge = wiek();
-            boolean success = s.updateStudentAge(searchName, searchLastName, newAge);
-            if (success) {
-              System.out.println("Zaktualizowano wiek studenta " + searchName + " " + searchLastName);
-            } else {
-              System.out.println("Nie znaleziono studenta o imieniu: " + searchName + " i nazwisku: " + searchLastName);
+
+          case 5:
+            System.out.print("Podaj imię studenta do aktualizacji: ");
+            String updateName = scanner.nextLine();
+            System.out.print("Podaj nazwisko studenta do aktualizacji: ");
+            String updateLastName = scanner.nextLine();
+
+            System.out.print("Podaj nowy wiek studenta: ");
+            int newAge = 0;
+            try {
+              newAge = Integer.parseInt(scanner.nextLine());
+              if (s.updateStudentAge(updateName, updateLastName, newAge)) {
+                System.out.println("Dane studenta zostały zaktualizowane.");
+              } else {
+                System.out.println("Nie znaleziono studenta o podanym imieniu i nazwisku.");
+              }
+            } catch (NumberFormatException e) {
+              System.out.println("Nieprawidłowy wiek!");
             }
             break;
-          }
-          case 6: {
-            System.out.println("Program zakończony.");
-            System.exit(0);
-            break;
-          }
 
-          default: {
-            System.out.println("Zły wybór. Wpisz ponownie.");
+          case 6:
+            running = false;
+            System.out.println("Zamykam program.");
             break;
-          }
+
+          default:
+            System.out.println("Nieznana opcja, spróbuj ponownie.");
+            break;
         }
       }
-
+      scanner.close();
     } catch (IOException e) {
-      System.out.println("Wystąpił błąd wejścia/wyjścia: " + e.getMessage());
-    }
-  }
-
-  public static void menu()
-  {
-    System.out.println("\nWybierz opcję:");
-    System.out.println("1 - Dodaj studenta");
-    System.out.println("2 - Wyświetl wszystkich studentów");
-    System.out.println("3 - Wyszukaj studenta po imieniu");
-    System.out.println("4 - Usuń studenta po imieniu i nazwisku");
-    System.out.println("5 - Zaktualizuj dane studenta");
-    System.out.println("6 - Zakończ program");
-    System.out.print("Co chcesz zrobic?: ");
-  }
-
-  public static String imie() {
-    System.out.print("Podaj imię studenta: ");
-    return scanner.nextLine();
-  }
-
-  public static String nazwisko() {
-    System.out.print("Podaj nazwisko studenta: ");
-    return scanner.nextLine();
-  }
-
-  public static int wiek() {
-    int age = 0;
-    boolean validAge = false;
-    while (!validAge) {
-      System.out.print("Podaj wiek studenta: ");
-      try {
-        age = Integer.parseInt(scanner.nextLine());
-        validAge = true;
-      } catch (NumberFormatException e) {
-        System.out.println("Wiek musi być liczbą. Spróbuj ponownie.");
-      }
-    }
-    return age;
-  }
-
-  public static String dataUrodzenia() {
-    while (true) {
-      System.out.print("Podaj datę urodzenia w formacie (dd-mm-rrrr): ");
-      String date = scanner.nextLine();
-
-      try {
-        String[] parts = date.split("-");
-        if (parts.length != 3) throw new Exception("Nieprawidłowy format daty.");
-
-        int day = Integer.parseInt(parts[0]);
-        int month = Integer.parseInt(parts[1]);
-        int year = Integer.parseInt(parts[2]);
-
-        if (day < 1 || day > 31) throw new Exception("Dzień musi być między 1 a 31.");
-        if (month < 1 || month > 12) throw new Exception("Miesiąc musi być między 1 a 12.");
-        if (year < 1900) throw new Exception("Rok nie może być mniejszy niż 1900.");
-
-        return date;
-
-      } catch (Exception e) {
-        System.out.println("Błąd: " + e.getMessage());
-        System.out.println("Spróbuj ponownie.");
-      }
+      System.out.println("Wystąpił błąd podczas obsługi pliku: " + e.getMessage());
     }
   }
 }
