@@ -70,6 +70,11 @@ class Main {
             }
             break;
           }
+          case 6: {
+            System.out.println("Program zakończony.");
+            System.exit(0);
+            break;
+          }
 
           default: {
             System.out.println("Zły wybór. Wpisz ponownie.");
@@ -90,7 +95,8 @@ class Main {
     System.out.println("2 - Wyświetl wszystkich studentów");
     System.out.println("3 - Wyszukaj studenta po imieniu");
     System.out.println("4 - Usuń studenta po imieniu i nazwisku");
-    System.out.println("5 - Zaktualizuj dane studenta"); // Added option for updating student data
+    System.out.println("5 - Zaktualizuj dane studenta");
+    System.out.println("6 - Zakończ program");
     System.out.print("Co chcesz zrobic?: ");
   }
 
