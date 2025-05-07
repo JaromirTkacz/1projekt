@@ -1,4 +1,3 @@
-import java.util.Collection;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,34 +8,51 @@ import java.io.IOException;
 public class Service {
 
   public void addStudent(Student student) throws IOException {
-    var f = new FileWriter("db.txt", true);
-    var b = new BufferedWriter(f);
-    b.append(student.toString());
-    b.newLine();
-    b.close();
-  }
-
-  public Collection<Student> getStudents() throws IOException {
-    var ret = new ArrayList<Student>();
-    var f = new FileReader("db.txt");
-    var reader = new BufferedReader(f);
-    String line;
-    while ((line = reader.readLine()) != null) {
-      ret.add(Student.parse(line));
+    try (BufferedWriter b = new BufferedWriter(new FileWriter("db.txt", true))) {
+      b.write(student.toString());
+      b.newLine();
     }
-    reader.close();
-    return ret;
   }
 
-  // Metoda wyszukująca wszystkich studentów o podanym imieniu
-  public Collection<Student> findStudentsByName(String name) throws IOException {
-    Collection<Student> students = getStudents();
-    Collection<Student> result = new ArrayList<>();
-    for (Student st : students) {
-      if (st.getName().equalsIgnoreCase(name)) {
-        result.add(st);
+  public ArrayList<Student> getStudents() throws IOException {
+    var students = new ArrayList<Student>();
+    try (BufferedReader reader = new BufferedReader(new FileReader("db.txt"))) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        students.add(Student.parse(line));
       }
     }
-    return result;
+    return students;
+  }
+
+  public Student findStudentByName(String name) throws IOException {
+    for (Student s : getStudents()) {
+      if (s.getName().equalsIgnoreCase(name)) {
+        return s;
+      }
+    }
+    return null;
+  }
+
+  public boolean removeStudent(String name, String lastName) throws IOException {
+    ArrayList<Student> students = getStudents();
+    boolean found = false;
+    for (Student student : students) {
+      if (student.getName().equalsIgnoreCase(name) && student.getLastName().equalsIgnoreCase(lastName)) {
+        students.remove(student);
+        found = true;
+        break;
+      }
+    }
+
+    if (found) {
+      try (BufferedWriter writer = new BufferedWriter(new FileWriter("db.txt"))) {
+        for (Student student : students) {
+          writer.write(student.toString());
+          writer.newLine();
+        }
+      }
+    }
+    return found;
   }
 }
