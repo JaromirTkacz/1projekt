@@ -1,57 +1,42 @@
-import java.io.*;
+import java.util.Collection;
 import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Service {
-  private List<Student> students;
-  private final String FILE_NAME = "students.txt";
 
-  public Service() throws IOException {
-    students = new ArrayList<>();
-    loadFromFile();
+  public void addStudent(Student student) throws IOException {
+    var f = new FileWriter("db.txt", true);
+    var b = new BufferedWriter(f);
+    b.append(student.toString());
+    b.newLine();
+    b.close();
   }
 
-  public void addStudent(Student s) {
-    students.add(s);
-  }
-
-  public List<Student> getStudents() {
-    return students;
-  }
-
-  public void saveToFile() throws IOException {
-    BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME));
-    for (Student s : students) {
-      writer.write(s.toDataString());
-      writer.newLine();
-    }
-    writer.close();
-  }
-
-  private void loadFromFile() throws IOException {
-    File file = new File(FILE_NAME);
-    if (!file.exists()) {
-      return;
-    }
-
-    BufferedReader reader = new BufferedReader(new FileReader(file));
+  public Collection<Student> getStudents() throws IOException {
+    var ret = new ArrayList<Student>();
+    var f = new FileReader("db.txt");
+    var reader = new BufferedReader(f);
     String line;
     while ((line = reader.readLine()) != null) {
-      Student s = Student.parse(line);
-      if (s != null) {
-        students.add(s);
-      }
+      ret.add(Student.parse(line));
     }
     reader.close();
+    return ret;
   }
 
-  public List<Student> findStudentByName(String name) {
-    List<Student> results = new ArrayList<>();
-    for (Student s : students) {
-      if (s != null && s.getName().equalsIgnoreCase(name)) {
-        results.add(s);
+  // Metoda wyszukująca wszystkich studentów o podanym imieniu
+  public Collection<Student> findStudentsByName(String name) throws IOException {
+    Collection<Student> students = getStudents();
+    Collection<Student> result = new ArrayList<>();
+    for (Student st : students) {
+      if (st.getName().equalsIgnoreCase(name)) {
+        result.add(st);
       }
     }
-    return results;
+    return result;
   }
 }
