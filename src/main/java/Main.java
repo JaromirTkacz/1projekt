@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Scanner;
 
 class Main {
@@ -14,7 +15,8 @@ class Main {
         System.out.println("\nWybierz opcję:");
         System.out.println("1 - Dodaj studenta");
         System.out.println("2 - Wyświetl wszystkich studentów");
-        System.out.println("3 - Zakończ");
+        System.out.println("3 - Wyszukaj studenta po imieniu");
+        System.out.println("4 - Zakończ");
         System.out.print("Twój wybór: ");
         int choice = Integer.parseInt(scanner.nextLine());
 
@@ -44,7 +46,7 @@ class Main {
               System.out.print("Podaj datę urodzenia studenta (RRRR-MM-DD): ");
               birthDate = scanner.nextLine();
               try {
-                LocalDate.parse(birthDate); // sprawdza poprawność formatu
+                LocalDate.parse(birthDate);
                 validDate = true;
               } catch (DateTimeParseException e) {
                 System.out.println("❌ Niepoprawny format daty. Spróbuj ponownie.");
@@ -52,18 +54,32 @@ class Main {
             }
 
             s.addStudent(new Student(name, lastname, age, birthDate));
-            System.out.println("✅ Dodano studenta.");
+            System.out.println("Dodano studenta.");
             break;
 
           case 2:
             var students = s.getStudents();
-            System.out.println("📋 Lista studentów:");
+            System.out.println("Lista studentów:");
             for (Student current : students) {
               System.out.println(current.toString());
             }
             break;
 
           case 3:
+            System.out.print("🔍 Podaj imię do wyszukania: ");
+            String searchName = scanner.nextLine();
+            List<Student> found = s.findStudentByName(searchName);
+            if (found.isEmpty()) {
+              System.out.println("Nie znaleziono studentów o imieniu: " + searchName);
+            } else {
+              System.out.println("🔎 Znaleziono:");
+              for (Student st : found) {
+                System.out.println(st.toString());
+              }
+            }
+            break;
+
+          case 4:
             tak = false;
             s.saveToFile();
             System.out.println("👋 Zakończono program.");

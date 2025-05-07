@@ -44,4 +44,14 @@ public class Service {
     }
     reader.close();
   }
+
+  public List<Student> findStudentByName(String name) {
+    List<Student> results = new ArrayList<>();
+    for (Student s : students) {
+      if (s != null && s.getName().equalsIgnoreCase(name)) {
+        results.add(s);
+      }
+    }
+    return results;
+  }
 }

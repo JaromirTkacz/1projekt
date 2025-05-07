@@ -11,6 +11,10 @@ public class Student {
     this.birthDate = birthDate;
   }
 
+  public String getName() {
+    return name;
+  }
+
   @Override
   public String toString() {
     return name + " " + lastname + ", wiek: " + age + ", data urodzenia: " + birthDate;
