@@ -58,9 +58,21 @@ class Main {
             }
             break;
           }
+          case 5: {
+            String searchName = imie();
+            String searchLastName = nazwisko();
+            int newAge = wiek();
+            boolean success = s.updateStudentAge(searchName, searchLastName, newAge);
+            if (success) {
+              System.out.println("Zaktualizowano wiek studenta " + searchName + " " + searchLastName);
+            } else {
+              System.out.println("Nie znaleziono studenta o imieniu: " + searchName + " i nazwisku: " + searchLastName);
+            }
+            break;
+          }
 
           default: {
-            System.out.println("Zy wybór. Wpisz ponownie.");
+            System.out.println("Zły wybór. Wpisz ponownie.");
             break;
           }
         }
@@ -78,6 +90,7 @@ class Main {
     System.out.println("2 - Wyświetl wszystkich studentów");
     System.out.println("3 - Wyszukaj studenta po imieniu");
     System.out.println("4 - Usuń studenta po imieniu i nazwisku");
+    System.out.println("5 - Zaktualizuj dane studenta"); // Added option for updating student data
     System.out.print("Co chcesz zrobic?: ");
   }
 
@@ -131,4 +144,69 @@ class Main {
       }
     }
   }
+}
+
+class Student {
+    String name;
+    String lastName;
+    int age;
+    String dateOfBirth;
+
+    public Student(String name, String lastName, int age, String dateOfBirth) {
+        this.name = name;
+        this.lastName = lastName;
+        this.age = age;
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                '}';
+    }
+}
+
+class Service {
+    ArrayList<Student> students = new ArrayList<>();
+
+    public void addStudent(Student student) {
+        students.add(student);
+    }
+
+    public ArrayList<Student> getStudents() {
+        return students;
+    }
+
+    public Student findStudentByName(String name) {
+        for (Student student : students) {
+            if (student.name.equals(name)) {
+                return student;
+            }
+        }
+        return null;
+    }
+
+    public boolean removeStudent(String name, String lastName) {
+        for (Student student : students) {
+            if (student.name.equals(name) && student.lastName.equals(lastName)) {
+                students.remove(student);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean updateStudentAge(String name, String lastName, int newAge) {
+        for (Student student : students) {
+            if (student.name.equals(name) && student.lastName.equals(lastName)) {
+                student.age = newAge;
+                return true;
+            }
+        }
+        return false;
+    }
 }

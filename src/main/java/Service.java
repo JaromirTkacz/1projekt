@@ -34,6 +34,30 @@ public class Service {
     return null;
   }
 
+  public boolean updateStudentAge(String name, String lastName, int newAge) throws IOException {
+    ArrayList<Student> students = getStudents();
+    boolean found = false;
+    
+    for (int i = 0; i < students.size(); i++) {
+      Student student = students.get(i);
+      if (student.getName().equalsIgnoreCase(name) && student.getLastName().equalsIgnoreCase(lastName)) {
+        students.set(i, new Student(name, lastName, newAge, student.getBirthDate()));
+        found = true;
+        break;
+      }
+    }
+
+    if (found) {
+      try (BufferedWriter writer = new BufferedWriter(new FileWriter("db.txt"))) {
+        for (Student student : students) {
+          writer.write(student.toString());
+          writer.newLine();
+        }
+      }
+    }
+    return found;
+  }
+
   public boolean removeStudent(String name, String lastName) throws IOException {
     ArrayList<Student> students = getStudents();
     boolean found = false;
